@@ -38,14 +38,14 @@ export default function RootLayout({
 
             <nav className="flex flex-col space-y-2">
               <Link href="/" className="text-lg p-3! rounded-lg hover:bg-slate-800 transition font-medium block">
-                Home
+                Dashboard
               </Link>
               <Link href="/analyze" className="text-lg p-3! rounded-lg hover:bg-slate-800 transition font-medium block">
                 Analyze
               </Link>
-              <Link href="/find" className="text-lg p-3! rounded-lg hover:bg-slate-800 transition font-medium block">
+              {/* <Link href="/find" className="text-lg p-3! rounded-lg hover:bg-slate-800 transition font-medium block">
                 Find Profile
-              </Link>
+              </Link> */}
             </nav>
           </div>
 
