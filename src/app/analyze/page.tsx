@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+import { connection } from 'next/server';
 import AnalyzeClient from './analyze-client';
 
 interface Provider {
@@ -18,12 +20,12 @@ interface ProviderModelConfig {
 
 async function getProviders(): Promise<Providers> {
     const apiBaseUrl = process.env.API_BASE_URL;
+    console.log('apiBaseUrl - ', apiBaseUrl);
     if (!apiBaseUrl) {
         throw new Error('API_BASE_URL must be configured to load providers');
     }
 
     const res = await fetch(`${apiBaseUrl.replace(/\/$/, '')}/api/v1/providers`, {
-        // Optional configuration configurations:
         next: { revalidate: 3600 }, // Cache data and re-check it every hour
     });
 
@@ -57,9 +59,9 @@ async function getProvidersData(): Promise<{
     }
 }
 
-
-
-export default async function Analyze() {
+async function AnalyzeContent() {
+    // Providers come from the live backend, so resolve them per request instead of at build time
+    await connection();
     try {
         const { providerList, providerModels } = await getProvidersData();
         return <AnalyzeClient providerList={providerList} providerModels={providerModels} />;
@@ -71,4 +73,12 @@ export default async function Analyze() {
             </main>
         );
     }
+}
+
+export default function Analyze() {
+    return (
+        <Suspense fallback={<p className="p-8 text-center">Loading providers...</p>}>
+            <AnalyzeContent />
+        </Suspense>
+    );
 }
